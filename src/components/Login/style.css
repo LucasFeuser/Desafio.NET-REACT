@@ -1,0 +1,145 @@
+
+.login-container{
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+.login-form-1{
+  border-radius: 15px 0px 0px 15px;
+  background: #FFFBFB;
+  padding: 5%;
+}
+.login-form-1{
+  text-align: center;
+  color: #333;
+}
+.login-form-2{
+  border-radius: 0px 15px 15px 0px;
+  background: rgba(53, 140, 132, 0.98);
+  padding-top: 3%;
+}
+.login-form-2{
+  color: #fff;
+}
+
+.login-form-2, .login-form-1{
+  box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.22);
+}
+
+.login-container form{
+  padding: 8%;
+}
+.btnSubmit
+{
+  width: 50%;
+  border-radius: 1rem;
+  padding: 1.5%;
+  border: none;
+  cursor: pointer;
+}
+.login-form-1 .btnSubmit{
+  font-weight: 600;
+  color: #fff;
+  background-color: #0062cc;
+}
+.login-form-2 .btnSubmit{
+  font-weight: 600;
+  color: #0062cc;
+  background-color: #fff;
+}
+.login-form-2 .ForgetPwd{
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+.login-form-1 .ForgetPwd{
+  color: #0062cc;
+  font-weight: 600;
+  text-decoration: none;
+}
+.input-format{
+  border: 0px !important;
+  border-bottom: 1px inset !important;
+  background: #FFFBFB !important;
+}
+input:focus{
+  outline: none !important;
+  box-shadow: none !important;
+}
+.tratar-inputs{
+  margin-bottom: 50px;
+}
+.estilizar-font{
+  color: #5C5959;
+}
+
+.estilizar-font-form2{
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 18px;
+}
+
+.botao-entrar{
+  background: #3E9F96;
+  color: #FFFFFF;
+  font-size: 25px !important;
+}
+
+.botao-testar{
+  background: #FFFBFB;
+  color: #284F72;  
+  font-size: 23px !important;
+}
+
+.botao-testar, .botao-entrar{
+  font-family: Alata;
+  width: 250px;
+  height: 65px;  
+  font-weight: 400 !important;
+  border-radius: 50px !important;  
+  box-shadow: 0px 2.2439024448394775px 2.2439024448394775px 0px rgba(0, 0, 0, 0.25);
+}
+
+.margem-botoes{
+  margin-top: 15%;
+}
+
+.tratar-span{
+  width: 100%;
+  margin: 1%;
+  border-radius: 2px;
+}
+
+.span-success{
+  background-color: rgba(62, 159, 150, 0.39) !important;
+}
+
+.span-warn{
+  background-color: rgba(226, 58, 58, 0.33) !important;
+}
+
+.span-wait{
+  background-color: rgba(0, 81, 255, 0.33) !important;
+}
+
+.tratar-font-icons{
+  height: 30px;
+  margin-right: 20px;
+}
+
+p{
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.icon-warn, .warn-message{
+  color: #991616;
+}
+
+.icon-success, .success-message{
+  color:  rgba(255, 255, 255, 0.76);
+}
+
+.validacao-requisitos-message{
+  font-family: Almarai;
+  font-size: 15px;
+  font-style: bold;
+}
