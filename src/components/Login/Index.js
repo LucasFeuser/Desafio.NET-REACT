@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import { faUser, faLock, faCamera, faWaveSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { toast, ToastContainer } from 'react-toastify';
 import {useNavigate} from 'react-router-dom';
 import api from '../../services/api';
 import './style.css';
-import 'bootstrap';
 
 
 export default function Login(){
@@ -18,6 +18,10 @@ export default function Login(){
 
     async function realizarTestes(event){
         navigate('/testeRequisitos');  
+    }
+
+    async function recoveryPass(){
+        navigate('/recoveryPassword');
     }
 
     async function login(event){
@@ -40,22 +44,27 @@ export default function Login(){
                     localStorage.setItem('email', email);
                     localStorage.setItem('token', response.data.token);
                     localStorage.setItem('expiration', response.data.expiration);
-                    alert('logado com sucesso');
+                    toast.success("Logando");
                 } else if(response.status >= 400 || response.status !== 429) {                                      
-                    alert('Email e ou Senha invalidos');                 
+                    toast.error("Login invalido");                
                 }  
                 else if(response.status === 429) {
-                    alert('Tentativas de acesso excedida. Tente novamente mais tarde.');
+                    toast.error("Tentativas de acesso excedida. Tente novamente mais tarde.");  
                 }              
 
                 //navigate.push('/alunos');       
         }
         catch(error){
-            alert('O login falhou' + error);
+            toast.error("Falha ao logar.");
+            console.log(error); 
         }
     }
 
-    return(<div className="container login-container">
+    return(
+    <div className="container login-container">
+
+    <ToastContainer />
+    
     <div className="row">
         <div className="col-md-6 login-form-1">             
             <form onSubmit={login}>
@@ -96,7 +105,7 @@ export default function Login(){
                         <button type="submit" className="btn botao-entrar">Entrar</button>                                     
                     </div>
                     <div className="form-group d-flex justify-content-center"> 
-                        <a href="#" class="ForgetPwd">Esqueceu sua senha?</a>
+                        <a href="#" onClick={recoveryPass}  class="ForgetPwd">Esqueceu sua senha?</a>
                     </div>
                 </div>        
             </form>

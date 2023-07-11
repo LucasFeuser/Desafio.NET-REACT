@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import Webcam from 'react-webcam';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
+import Webcam from 'react-webcam';
+
 
 export function useDevicesCheck()
 {
-
-    const [validacao, setValidacao] = useState(true);
-    const [isMicAvailable, setMicAvailability] = useState(false);
-    const [isCameraAvailable, setCameraAvailability] = useState(false);
-    const [internetSpeed, setInternetSpeed] = useState(null);
     const [isBrowserCompatible, setIsBrowserCompatible] = useState(true);
-    
-    let dataMic = {};
-    let dataCamera =  {};
+    const [isCameraAvailable, setCameraAvailability] = useState(false);
+    const [isMicAvailable, setMicAvailability] = useState(false);
+    const [internetSpeed, setInternetSpeed] = useState(null);
+    const [validacao, setValidacao] = useState(true);
+    const [speed, setSpeed] = useState(null);
+
     let dataInternet = {};
     let dataBrowser = {};
+    let dataCamera =  {};
+    let dataMic = {};
     let object;
 
     let mensagemValidacao;
@@ -25,51 +26,58 @@ export function useDevicesCheck()
     let tratarTagP;
     let icon;    
   
-    useEffect(() => {
       const checkDevices = () => {
         navigator.mediaDevices.getUserMedia({ video: true })
-          .then(function(stream) {
-            setCameraAvailability(true);
-            stream.getTracks().forEach(track => track.stop());
-          })
-          .catch(function(err) {
-            setCameraAvailability(false);
-          });
-  
+            .then(function(stream) {
+                setCameraAvailability(true);
+                stream.getTracks().forEach(track => track.stop());
+            })
+            .catch(function(err) {
+                setCameraAvailability(false);
+            });
+
         navigator.mediaDevices.getUserMedia({ audio: true })
-          .then(function(stream) {
-            setMicAvailability(true);
-            stream.getTracks().forEach(track => track.stop());
-          })
-          .catch(function(err) {
-            setMicAvailability(false);
-          });
+            .then(function(stream) {
+                setMicAvailability(true);
+                stream.getTracks().forEach(track => track.stop());
+            })
+            .catch(function(err) {
+                setMicAvailability(false);
+            });
 
-          if (!navigator.geolocation) {
+        //Verificar compatibilidade de browser
+        if (!navigator.geolocation) {
             setIsBrowserCompatible(false);
-          }
-      }
-  
-      checkDevices();
-      const timer = setTimeout(() => {
-        InternetTesteSpeed(); 
-      }, 10000);
-      return () => clearTimeout(timer);
-    }, []);
+        }
+    }  
 
-    async function InternetTesteSpeed(){
-      try
-      {
-        const response = await api.get('/api/InternetSpeedTeste');
-          
-              if(response.status === 200) {                
-                setInternetSpeed(response.data)   
-              }                          
-      }
-      catch(error){
-          alert('Erro no teste de velocidade' + error);
-      }
+    //Baixar arquivo e validar velocidade da internet
+    const measureSpeed = async () => {
+        const startTime = Date.now();
+        const response = await fetch('https://eu.httpbin.org/stream-bytes/50000000');
+        const endTime = Date.now();
+
+        if (!response.ok) {
+            console.error('Failed to download file');
+            return;
+        }
+
+        const data = await response.arrayBuffer();
+        const duration = (endTime - startTime) / 1000; 
+        const bitsLoaded = data.byteLength * 8;
+        const speed = bitsLoaded / duration;
+
+        setSpeed(speed);
+    };
+
+    const checkDevicesAndSpeed = () => {
+        checkDevices();
+        measureSpeed();
     }
+
+    useEffect(() => {
+        checkDevicesAndSpeed();
+    }, []);        
 
     if(isCameraAvailable)
     {
@@ -80,7 +88,7 @@ export function useDevicesCheck()
       dataCamera = warnFieldValues("Camera não encontrada.");
     }
 
-    if(isMicAvailable)
+    if(isMicAvailable) 
     {
       dataMic = successFieldValues("Microfone disponivel.");      
     }
@@ -89,7 +97,7 @@ export function useDevicesCheck()
       dataMic = warnFieldValues("Microfone não encontrado.");      
     }
 
-    if(internetSpeed > 50)
+    if(speed > 50)
     {
       dataInternet = successFieldValues("Velocidade da internet suficiente.")
       
@@ -101,11 +109,11 @@ export function useDevicesCheck()
 
     if(isBrowserCompatible)
     {
-      dataBrowser = successFieldValues("Navegador compativel")
+      dataBrowser = successFieldValues("Navegador compativel.")
     }
     else
     {
-      dataBrowser = warnFieldValues("Navegador incompativel, tente um outro.");
+      dataBrowser = warnFieldValues("Navegador incompativel, tente acessar por um outro.");
     }
 
     function successFieldValues(msg) 
@@ -126,9 +134,11 @@ export function useDevicesCheck()
         icon : faExclamationCircle,
         spanClasseChanged : "input-group-text tratar-span span-warn",
         tratarTagP : "validacao-requisitos-message warn-message",
-        tratarFontIcons :"tratar-font-icons icon-warn",
+        tratarFontIcons :"tratar-font-icons icon-warn icon-error",
       }
     }    
 
-    return{ dataMic, dataCamera, dataInternet, dataBrowser}
+    
+
+    return{ dataMic, dataCamera, dataInternet, dataBrowser, checkDevicesAndSpeed } 
 }

@@ -1,30 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import {useDevicesCheck}  from './useDevicesCheck';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
+import imagemRequisitos from '../../assets/img-Requisitos.jpeg';
+import {useNavigate} from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import './style.css';
 import 'bootstrap';
 
 export default function TesteRequisitos() {    
 
-    const {dataMic, dataCamera, dataInternet, dataBrowser} = useDevicesCheck();
+    const {dataMic, dataCamera, dataInternet, dataBrowser, checkDevicesAndSpeed } = useDevicesCheck();
 
+    const navigate = useNavigate();
+    async function backLogin(event){
+        navigate('/');  
+    }
+   
     return(
         <div className="container login-container">
-            <div className="row">
-                <div className="col-md-6 login-form-1">             
-                    <form >
-                        <div className="form-group d-flex justify-content-start mb-0"> 
-                            <h1>Teste de requisitos 
-                                <br/>
-                                técnicos
-                            </h1>
-                        </div>
-                        <div className="d-flex justify-content-start tratar-inputs"> 
-                            <h5 className="estilizar-font">Faça o login para continuar.</h5>          
-                        </div>
+            <ToastContainer />
 
+            <div className="row">
+                <div className="col-md-6 login-form-1">  
+                <div className="form-group d-flex justify-content-start m-5">                 
+                        <h1>Teste de requisitos
+                            <br/>
+                            tecnicos
+                        </h1>
+                    </div>                           
+                    <form >                                                                    
                         <div className="form-group mt-10">                        
                             <div className="input-group-prepend">
                                 <span className={dataMic.spanClasseChanged}>                              
@@ -45,20 +50,25 @@ export default function TesteRequisitos() {
                                 </span>
                             </div>                                                              
                             <div className="input-group-prepend">
+                                
                                 <span className={dataBrowser.spanClasseChanged}>
                                     <FontAwesomeIcon icon={dataBrowser.icon} className={dataBrowser.tratarFontIcons} />       
                                     <p className={dataBrowser.tratarTagP}>{dataBrowser.mensagem}</p>                              
                                 </span>
                             </div>                                                      
-                        </div>
-                        <div className="form-group">                               
-                        </div>        
+                        </div>                             
                     </form>
                 </div>
 
-                <div className="col-md-6 login-form-2">  
-                    
-                </div>        
+                <div className="col-md-6 login-form-2">
+                    <div className="justify-content-center d-flex align-items-center flex-column pb-5 m-">
+                        <img src={imagemRequisitos} style={{width: '45vh', margin: '15% 0% 3% 0%'}}/>
+                        <div>
+                            <button onClick={backLogin} className="btn botao-entrar" style={{background: '#FFFF', color:'#284F72'}}>Concluído</button>  
+                            <button onClick={checkDevicesAndSpeed} className="btn botao-entrar" style={{background: '#FFFF', color:'#284F72'}}>Retestar</button>
+                        </div>                                                                                  
+                    </div>                    
+                </div>  
             </div>
         </div>
     )

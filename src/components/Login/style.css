@@ -16,8 +16,13 @@
   border-radius: 0px 15px 15px 0px;
   background: rgba(53, 140, 132, 0.98);
   padding-top: 3%;
+  color: #fff;
 }
-.login-form-2{
+
+.login-form-3{
+  border-radius: 15px;
+  background: rgba(53, 140, 132, 0.98);
+  padding-top: 3%;
   color: #fff;
 }
 
@@ -132,14 +137,27 @@ p{
 
 .icon-warn, .warn-message{
   color: #991616;
+  font-weight: bold;
 }
 
 .icon-success, .success-message{
-  color:  rgba(255, 255, 255, 0.76);
+  color:  #28625C;
+  font-weight: bold;
 }
 
 .validacao-requisitos-message{
   font-family: Almarai;
   font-size: 15px;
   font-style: bold;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.icon-error {
+  color: red;
+  animation: blink 1.5s linear infinite;
 }
