@@ -1,7 +1,7 @@
 import { faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import api from '../../../../services/api';
 import Webcam from 'react-webcam';
 
 
@@ -11,22 +11,16 @@ export function useDevicesCheck()
     const [isCameraAvailable, setCameraAvailability] = useState(false);
     const [isMicAvailable, setMicAvailability] = useState(false);
     const [internetSpeed, setInternetSpeed] = useState(null);
-    const [validacao, setValidacao] = useState(true);
-    const [speed, setSpeed] = useState(null);
 
     let dataInternet = {};
     let dataBrowser = {};
     let dataCamera =  {};
     let dataMic = {};
-    let object;
 
-    let mensagemValidacao;
-    let spanClasseChanged;
-    let tratarFontIcons;
-    let tratarTagP;
-    let icon;    
+    const SUPERIMAGEMPATH = "https://img.freepik.com/fotos-gratis/uma-pintura-digital-de-uma-montanha-com-uma-arvore-colorida-em-primeiro-plano_1340-25699.jpg?w=740&t=st=1689182472~exp=1689183072~hmac=41106b332e83d75b548956df3e07c63047a789de04421d8b69c753125eedcb37";  
+    const DOWNLOADSIZE = 5739426;
   
-      const checkDevices = () => {
+      const checkDevices =  () => {
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
                 setCameraAvailability(true);
@@ -44,77 +38,63 @@ export function useDevicesCheck()
             .catch(function(err) {
                 setMicAvailability(false);
             });
-
-        //Verificar compatibilidade de browser
-        if (!navigator.geolocation) {
-            setIsBrowserCompatible(false);
+            const isChromeOrEdge = /Chrome|Edg\//.test(navigator.userAgent)
+            console.log(navigator.userAgent)
+        if (isChromeOrEdge) {
+            setIsBrowserCompatible(true);
         }
     }  
 
-    //Baixar arquivo e validar velocidade da internet
-    const measureSpeed = async () => {
-        const startTime = Date.now();
-        const response = await fetch('https://eu.httpbin.org/stream-bytes/50000000');
-        const endTime = Date.now();
-
-        if (!response.ok) {
-            console.error('Failed to download file');
-            return;
+    const medirVelocidadeInternet = async () => {      
+        var startTime, endTime;
+        var download = new Image();
+        download.onload = function () {
+            endTime = (new Date()).getTime();
+            showResults();
         }
-
-        const data = await response.arrayBuffer();
-        const duration = (endTime - startTime) / 1000; 
-        const bitsLoaded = data.byteLength * 8;
-        const speed = bitsLoaded / duration;
-
-        setSpeed(speed);
-    };
-
-    const checkDevicesAndSpeed = () => {
+        
+        startTime = (new Date()).getTime();
+        var cacheBuster = "?nnn=" + startTime;
+        download.src = SUPERIMAGEMPATH + cacheBuster;
+        
+        function showResults(){
+          var duration = (endTime - startTime) / 1000;
+          var bitsLoaded = DOWNLOADSIZE * 8;
+          var speedBps = (bitsLoaded / duration).toFixed(2);
+          var speedKbps = (speedBps / 1024).toFixed(2);
+          var speedMbps = (speedKbps / 1024).toFixed(2);
+          setInternetSpeed(speedMbps); 
+        }               
+      };
+    
+    const checkDevicesAndInternetSpeed =  () => {
         checkDevices();
-        measureSpeed();
+        medirVelocidadeInternet().then((response) => {setInternetSpeed(response)});
     }
 
     useEffect(() => {
-        checkDevicesAndSpeed();
+        checkDevicesAndInternetSpeed();
     }, []);        
 
     if(isCameraAvailable)
-    {
       dataCamera = successFieldValues("Camera disponivel.");
-    }
-    else
-    {
+    else    
       dataCamera = warnFieldValues("Camera não encontrada.");
-    }
 
-    if(isMicAvailable) 
-    {
+    if(isMicAvailable)     
       dataMic = successFieldValues("Microfone disponivel.");      
-    }
-    else
-    {
+    else    
       dataMic = warnFieldValues("Microfone não encontrado.");      
-    }
 
-    if(speed > 50)
-    {
+    if(internetSpeed > 10)    
       dataInternet = successFieldValues("Velocidade da internet suficiente.")
-      
-    }
-    else
-    {
+    else    
       dataInternet = warnFieldValues("Velocidade da internet insuficiente.");
-    }
 
-    if(isBrowserCompatible)
-    {
-      dataBrowser = successFieldValues("Navegador compativel.")
-    }
-    else
-    {
-      dataBrowser = warnFieldValues("Navegador incompativel, tente acessar por um outro.");
-    }
+    if(isBrowserCompatible)    
+      dataBrowser = successFieldValues("Navegador compativel.")    
+    else    
+      dataBrowser = warnFieldValues("Navegador incompativel, <br/> tente acessar por um outro.");
 
     function successFieldValues(msg) 
     {
@@ -138,7 +118,5 @@ export function useDevicesCheck()
       }
     }    
 
-    
-
-    return{ dataMic, dataCamera, dataInternet, dataBrowser, checkDevicesAndSpeed } 
+    return{ dataMic, dataCamera, dataInternet, dataBrowser, checkDevicesAndInternetSpeed } 
 }

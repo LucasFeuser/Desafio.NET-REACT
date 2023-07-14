@@ -2,6 +2,8 @@
 .login-container{
   margin-top: 5%;
   margin-bottom: 5%;
+  display: flex;
+  justify-content: center;
 }
 .login-form-1{
   border-radius: 15px 0px 0px 15px;
@@ -63,7 +65,7 @@
 }
 .input-format{
   border: 0px !important;
-  border-bottom: 1px inset !important;
+  border-bottom: 1px inset rgb(221 221 221) !important;
   background: #FFFBFB !important;
 }
 input:focus{
@@ -103,8 +105,11 @@ input:focus{
   box-shadow: 0px 2.2439024448394775px 2.2439024448394775px 0px rgba(0, 0, 0, 0.25);
 }
 
-.margem-botoes{
-  margin-top: 15%;
+.estilizar-botoes{
+  width: 10vw !important;
+  border-radius: 2em !important;
+  display: flex !important;
+  flex-basis: max-content !important;
 }
 
 .tratar-span{
